@@ -1,24 +1,40 @@
-document.addEventListener('DOMContentLoaded', function () {
-  const taskInput = document.getElementById('task-input');
-  const addBtn = document.getElementById('add-btn');
-  const taskList = document.getElementById('task-list');
-  const filterBtns = document.querySelectorAll('.filter-btn');
-  const statsElement = document.getElementById('stats');
+document.addEventListener("DOMContentLoaded", function () {
+  const taskInput = document.getElementById("task-input");
+  const addBtn = document.getElementById("add-btn");
+  const taskList = document.getElementById("task-list");
+  const filterBtns = document.querySelectorAll(".filter-btn");
+  const statsElement = document.getElementById("stats");
 
-  let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
-  let currentFilter = 'all';
+  Notiflix.Confirm.init({
+    okButtonBackground: "#3b82f6",
+    okButtonColor: "#ffffff",
+    cancelButtonBackground: "#e5e7eb",
+    cancelButtonColor: "#374151",
+    titleColor: "#3b82f6",
+    messageColor: "#3b82f6",
+  });
+
+  Notiflix.Notify.init({
+    background: "#3b82f6",
+    textColor: "#ffffff",
+    position: "right-top",
+    timeout: 2500,
+  });
+
+  let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+  let currentFilter = "all";
 
   renderTasks();
 
-  addBtn.addEventListener('click', addTask);
-  taskInput.addEventListener('keypress', e => {
-    if (e.key === 'Enter') addTask();
+  addBtn.addEventListener("click", addTask);
+  taskInput.addEventListener("keypress", (e) => {
+    if (e.key === "Enter") addTask();
   });
 
-  filterBtns.forEach(btn => {
-    btn.addEventListener('click', function () {
-      filterBtns.forEach(b => b.classList.remove('active'));
-      this.classList.add('active');
+  filterBtns.forEach((btn) => {
+    btn.addEventListener("click", function () {
+      filterBtns.forEach((b) => b.classList.remove("active"));
+      this.classList.add("active");
       currentFilter = this.dataset.filter;
       renderTasks();
     });
@@ -32,38 +48,38 @@ document.addEventListener('DOMContentLoaded', function () {
       id: Date.now(),
       text,
       completed: false,
-      createdAt: new Date().toISOString()
+      createdAt: new Date().toISOString(),
     };
 
     tasks.unshift(newTask);
     saveTasks();
-    taskInput.value = '';
+    taskInput.value = "";
     renderTasks();
   }
 
   function renderTasks() {
-    taskList.innerHTML = '';
+    taskList.innerHTML = "";
 
     let filteredTasks = tasks;
-    if (currentFilter === 'active') {
-      filteredTasks = tasks.filter(t => !t.completed);
-    } else if (currentFilter === 'completed') {
-      filteredTasks = tasks.filter(t => t.completed);
+    if (currentFilter === "active") {
+      filteredTasks = tasks.filter((t) => !t.completed);
+    } else if (currentFilter === "completed") {
+      filteredTasks = tasks.filter((t) => t.completed);
     }
 
     if (filteredTasks.length === 0) {
-      const emptyState = document.createElement('div');
-      emptyState.className = 'text-center py-10 text-gray-400';
+      const emptyState = document.createElement("div");
+      emptyState.className = "text-center py-10 text-gray-400";
 
-      const img = document.createElement('img');
+      const img = document.createElement("img");
       img.src =
-        'https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/1fe74631-f6e3-454f-9745-02ac905837cf.png';
+        "https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/1fe74631-f6e3-454f-9745-02ac905837cf.png";
       img.alt =
-        'Illustration of a peaceful desk setup with plants and notebook representing no tasks';
-      img.className = 'mx-auto mb-4 rounded-lg';
+        "Illustration of a peaceful desk setup with plants and notebook representing no tasks";
+      img.className = "mx-auto mb-4 rounded-lg";
 
-      const message = document.createElement('p');
-      message.textContent = 'Nothing to do. Enjoy your free time!';
+      const message = document.createElement("p");
+      message.textContent = "Nothing to do. Enjoy your free time!";
 
       emptyState.appendChild(img);
       emptyState.appendChild(message);
@@ -73,7 +89,7 @@ document.addEventListener('DOMContentLoaded', function () {
       return;
     }
 
-    filteredTasks.forEach(task => {
+    filteredTasks.forEach((task) => {
       const taskElement = createTaskElement(task);
       taskList.appendChild(taskElement);
     });
@@ -82,17 +98,16 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   function createTaskElement(task) {
-    const taskElement = document.createElement('div');
-    taskElement.className =
-      'todo-card flex items-center p-4 cursor-move';
+    const taskElement = document.createElement("div");
+    taskElement.className = "todo-card flex items-center p-4 cursor-move";
     taskElement.draggable = true;
     taskElement.dataset.id = task.id;
 
     taskElement.innerHTML = `
       <div class="flex items-center gap-4 flex-1">
-        <input type="checkbox" ${task.completed ? 'checked' : ''}
+        <input type="checkbox" ${task.completed ? "checked" : ""}
           class="checkbox" id="task-${task.id}">
-        <span class="task-text ${task.completed ? 'completed' : ''}">${task.text}</span>
+        <span class="task-text ${task.completed ? "completed" : ""}">${task.text}</span>
       </div>
       <div class="flex gap-2">
         <button class="edit-btn text-gray-400 hover:text-purple-500">
@@ -108,55 +123,66 @@ document.addEventListener('DOMContentLoaded', function () {
       </div>
     `;
 
-    const checkbox = taskElement.querySelector('.checkbox');
-    checkbox.addEventListener('change', function () {
+    const checkbox = taskElement.querySelector(".checkbox");
+    checkbox.addEventListener("change", function () {
       task.completed = this.checked;
       saveTasks();
       renderTasks();
     });
 
-    const textElement = taskElement.querySelector('.task-text');
-    textElement.addEventListener('click', function () {
+    const textElement = taskElement.querySelector(".task-text");
+    textElement.addEventListener("click", function () {
       editTask(task.id);
     });
 
-    const editBtn = taskElement.querySelector('.edit-btn');
-    editBtn.addEventListener('click', function (e) {
+    const editBtn = taskElement.querySelector(".edit-btn");
+    editBtn.addEventListener("click", function (e) {
       e.stopPropagation();
       editTask(task.id);
     });
 
-    const deleteBtn = taskElement.querySelector('.delete-btn');
-    deleteBtn.addEventListener('click', function (e) {
+    const deleteBtn = taskElement.querySelector(".delete-btn");
+    deleteBtn.addEventListener("click", function (e) {
       e.stopPropagation();
-      tasks = tasks.filter(t => t.id !== task.id);
-      saveTasks();
-      renderTasks();
+
+      Notiflix.Confirm.show(
+        "Delete Task",
+        "Are you sure you want to delete this task?",
+        "Delete",
+        "Cancel",
+        function okCb() {
+          tasks = tasks.filter((t) => t.id !== task.id);
+          saveTasks();
+          renderTasks();
+
+          Notiflix.Notify.success("Task deleted successfully!");
+        },
+      );
     });
 
     // Drag & drop
-    taskElement.addEventListener('dragstart', function (e) {
-      e.dataTransfer.setData('text/plain', task.id);
-      setTimeout(() => taskElement.classList.add('opacity-50'), 0);
+    taskElement.addEventListener("dragstart", function (e) {
+      e.dataTransfer.setData("text/plain", task.id);
+      setTimeout(() => taskElement.classList.add("opacity-50"), 0);
     });
 
-    taskElement.addEventListener('dragend', function () {
-      taskElement.classList.remove('opacity-50');
+    taskElement.addEventListener("dragend", function () {
+      taskElement.classList.remove("opacity-50");
     });
 
-    taskElement.addEventListener('dragover', function (e) {
+    taskElement.addEventListener("dragover", function (e) {
       e.preventDefault();
     });
 
-    taskElement.addEventListener('drop', function (e) {
+    taskElement.addEventListener("drop", function (e) {
       e.preventDefault();
-      const draggedId = parseInt(e.dataTransfer.getData('text/plain'));
-      const draggedTask = tasks.find(t => t.id === draggedId);
+      const draggedId = parseInt(e.dataTransfer.getData("text/plain"));
+      const draggedTask = tasks.find((t) => t.id === draggedId);
       const targetId = parseInt(taskElement.dataset.id);
 
       if (draggedId !== targetId) {
-        tasks = tasks.filter(t => t.id !== draggedId);
-        const targetIndex = tasks.findIndex(t => t.id === targetId);
+        tasks = tasks.filter((t) => t.id !== draggedId);
+        const targetIndex = tasks.findIndex((t) => t.id === targetId);
         tasks.splice(targetIndex, 0, draggedTask);
         saveTasks();
         renderTasks();
@@ -166,15 +192,15 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   function editTask(taskId) {
-    const task = tasks.find(t => t.id === taskId);
+    const task = tasks.find((t) => t.id === taskId);
     const taskElement = document.querySelector(`[data-id="${taskId}"]`);
-    const textElement = taskElement.querySelector('.task-text');
+    const textElement = taskElement.querySelector(".task-text");
 
-    const input = document.createElement('input');
-    input.type = 'text';
+    const input = document.createElement("input");
+    input.type = "text";
     input.value = task.text;
     input.className =
-      'flex-1 px-2 py-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:outline-none';
+      "flex-1 px-2 py-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:outline-none";
 
     textElement.replaceWith(input);
     input.focus();
@@ -188,22 +214,21 @@ document.addEventListener('DOMContentLoaded', function () {
       renderTasks();
     };
 
-    input.addEventListener('blur', finishEdit);
-    input.addEventListener('keypress', function (e) {
-      if (e.key === 'Enter') finishEdit();
+    input.addEventListener("blur", finishEdit);
+    input.addEventListener("keypress", function (e) {
+      if (e.key === "Enter") finishEdit();
     });
   }
 
   function saveTasks() {
-    localStorage.setItem('tasks', JSON.stringify(tasks));
+    localStorage.setItem("tasks", JSON.stringify(tasks));
   }
 
   function updateStats() {
     const total = tasks.length;
-    const completed = tasks.filter(t => t.completed).length;
+    const completed = tasks.filter((t) => t.completed).length;
     const remaining = total - completed;
 
-    statsElement.textContent =
-      `${remaining} remaining of ${total} tasks (${completed} completed)`;
+    statsElement.textContent = `${remaining} remaining of ${total} tasks (${completed} completed)`;
   }
 });
