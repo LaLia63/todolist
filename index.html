@@ -14,11 +14,11 @@
     <link rel="stylesheet" href="style.css" />
     <script src="script.js" defer></script>
   </head>
-  <body class="max-w-2xl mx-auto">
+  <body class="w-full max-w-2xl mx-auto px-4 sm:px-6">
     <header class="mb-10">
       <div class="flex items-center justify-center gap-3 mb-6">
         <h1
-          class="text-3xl font-bold bg-gradient-to-r from-purple-600 to-blue-500 bg-clip-text text-transparent"
+          class="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-purple-600 to-blue-500 bg-clip-text text-transparent"
         >
           Pure Todo
         </h1>
@@ -27,7 +27,7 @@
     </header>
 
     <main class="space-y-6">
-      <div class="flex gap-4">
+      <div class="flex flex-col sm:flex-row gap-3 sm:gap-4">
         <input
           type="text"
           id="task-input"
@@ -36,13 +36,13 @@
         />
         <button
           id="add-btn"
-          class="add-btn px-6 py-3 text-white font-medium rounded-lg shadow"
+          class="add-btn w-full sm:w-auto px-6 py-3 text-white font-medium rounded-lg shadow"
         >
           Add Task
         </button>
       </div>
 
-      <div class="flex gap-2 mt-4 justify-center">
+      <div class="flex flex-wrap gap-2 mt-4 justify-center">
         <button
           data-filter="all"
           class="filter-btn active px-4 py-2 rounded-lg text-sm font-medium"

@@ -99,15 +99,17 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function createTaskElement(task) {
     const taskElement = document.createElement("div");
-    taskElement.className = "todo-card flex items-center p-4 cursor-move";
+    taskElement.className = "todo-card flex items-center gap-3 p-4 cursor-move";
     taskElement.draggable = true;
     taskElement.dataset.id = task.id;
 
     taskElement.innerHTML = `
-      <div class="flex items-center gap-4 flex-1">
+      <div class="flex items-center gap-3 flex-1 min-w-0">
         <input type="checkbox" ${task.completed ? "checked" : ""}
           class="checkbox" id="task-${task.id}">
-        <span class="task-text ${task.completed ? "completed" : ""}">${task.text}</span>
+          <span class="task-text min-w-0 break-words ${task.completed ? "completed" : ""}">
+  ${task.text}
+</span>
       </div>
       <div class="flex gap-2">
         <button class="edit-btn text-gray-400 hover:text-purple-500">
